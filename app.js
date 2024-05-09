@@ -1,8 +1,25 @@
 const express = require('express');
+const cors = require('cors');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-
 const app = express();
+
+//CORS Setup
+app.use((req, res, next) =>{
+  res.header("Access-Control-Allow-Origin", true);
+  res.header("Access-Control_Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers","X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
+  next();
+})
+app.use(
+  cors({credentials: true,
+    allowedHeaders:["Origin", "X-Requested-With", "Content-Type", "Accept"],
+  })
+)
+app.set("trust proxy", 1); //properly get the client's IP address.
+
+//set views
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', express.static('./public'));
