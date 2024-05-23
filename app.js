@@ -13,8 +13,9 @@ app.use((req, res, next) =>{
   res.header("Access-Control-Allow-Headers","X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
   next();
 })
-app.use(
-  cors({credentials: true,
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
     allowedHeaders:["Origin", "X-Requested-With", "Content-Type", "Accept"],
   })
 )

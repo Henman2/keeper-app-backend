@@ -9,22 +9,22 @@ const showNotes = async (req, res, next) => {
         console.error(error);
         next(error);
     }
-}
+};
+//notes/newnote
 const createNote = async (req, res, next) => {
     try {
         const newNote = await noteModel.create(
             {title: req.body.title, content: req.body.content}
         );
-        res.status(200).json(
-            {title: newNote.title, content: newNote.content}
-        );
+        const savedNote = await noteModel.findById(newNote._id);
+        res.status(200).json(savedNote);
     }catch(error){
         console.error(error);
         next(error);
     }
     
 }
-//notes/:noteId
+//notes/updatenote
 const updateNote = async (req, res, next) => {
     try {
         const { noteID, title, content } = req.body;
@@ -39,7 +39,7 @@ const updateNote = async (req, res, next) => {
         next(error);
     }
 };
-
+//deletenote
 const deleteNote = async (req, res, next) => {
     try{
         const deletednote = await noteModel.findByIdAndDelete({_id: req.body.noteID});
