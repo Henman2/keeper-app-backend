@@ -32,7 +32,7 @@ const userLogout = async (req, res) => {
     res.status(200).send('User logged out successfully');
 }
 const createUser = async (req, res) => { 
-     const { name, email, password, confirmPassword } = req.body; 
+    const { name, email, password, confirmPassword } = req.body; 
     try {
         const existUser = await userModel.findOne({ email });
         if (existUser) {

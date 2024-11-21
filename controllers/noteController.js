@@ -1,9 +1,9 @@
 const noteModel = require('../models/noteModel');
 
 //notes
-const showNotes = async (req, res, next) => {
+const getNotes = async (req, res, next) => {
     try{
-        const notes = await noteModel.find({});
+        const notes = await noteModel.find({user: req.user._id}); //get notes by user
         return res.status(200).json(notes);
     }catch(error){
         console.error(error);
@@ -14,10 +14,14 @@ const showNotes = async (req, res, next) => {
 const createNote = async (req, res, next) => {
     try {
         const newNote = await noteModel.create(
-            {title: req.body.title, content: req.body.content}
+            {
+                user: req.user._id,
+                title: req.body.title,
+                content: req.body.content
+            }
         );
         const savedNote = await noteModel.findById(newNote._id);
-        res.status(200).json(savedNote);
+        res.status(201).json(savedNote);
     }catch(error){
         console.error(error);
         next(error);
@@ -28,11 +32,14 @@ const createNote = async (req, res, next) => {
 const updateNote = async (req, res, next) => {
     try {
         const { noteID, title, content } = req.body;
-        // Find the note by ID and update its title and content
-        const updatednote = await noteModel.findByIdAndUpdate(noteID, { title, content }, { new: true });
-        if (!updatednote) {
+        // Find the note by ID and verify user
+        const note = await noteModel.findOne({_id: noteID, user: req.user._id});
+        if (!note) {
             return res.status(404).json({ message: 'Note not found' });
         }
+        note.title = title || note.title;
+        note.content = content || note.content;
+        const updatednote = await note.save();
         res.status(200).json(updatednote);
     } catch (error) {
         console.error(error);
@@ -41,13 +48,15 @@ const updateNote = async (req, res, next) => {
 };
 //deletenote
 const deleteNote = async (req, res, next) => {
-    try{
-        const deletednote = await noteModel.findByIdAndDelete({_id: req.body.noteID});
-        res.status(200).json(deletednote);
+    try {
+        const { noteID } = req.body;
+        const note = await noteModel.findOne({ _id: noteID, user: req.user._id });
+        const deletednote = await note.deleteOne();
+        res.status(200).json({ message: 'Note deleted successfully', deletednote });
     }catch(error){
         console.error(error);
         next(error);
     }
 }
 
-module.exports = {showNotes, createNote, updateNote, deleteNote}
+module.exports = {getNotes, createNote, updateNote, deleteNote}

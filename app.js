@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRouter = require('./routes/userRoutes');
 const noteRouter = require('./routes/noteRoutes');
 const app = express();
+const cookieParser = require('cookie-parser');
 
 //CORS Setup
 app.use((req, res, next) =>{
@@ -23,6 +24,7 @@ app.set("trust proxy", 1); //properly get the client's IP address.
 
 //set views
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', express.static('./public'));
 
