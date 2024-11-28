@@ -9,7 +9,7 @@ const {
 const { auth } = require('../middlewares/authenticate');
 
 /* users/login */
-userRouter.post('/login',auth, userLogin);
+userRouter.post('/login', userLogin);
 /* users/register */
 userRouter.post('/register', createUser);
 /* users/logout */
