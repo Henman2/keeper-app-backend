@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-// const indexRouter = require('./routes/index');
 const userRouter = require('./routes/userRoutes');
 const noteRouter = require('./routes/noteRoutes');
 const app = express();
@@ -22,14 +21,13 @@ app.use(cors({
 )
 app.set("trust proxy", 1); //properly get the client's IP address.
 
-//set views
+// Set views
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', express.static('./public'));
 
-//Express routes
-// app.use('/', indexRouter);
+// Express routes
 app.use('/users', userRouter);
 app.use('/notes', noteRouter);
 
