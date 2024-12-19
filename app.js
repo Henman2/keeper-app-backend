@@ -5,21 +5,28 @@ const noteRouter = require('./routes/noteRoutes');
 const app = express();
 const cookieParser = require('cookie-parser');
 
-//CORS Setup
-app.use((req, res, next) =>{
-  res.header("Access-Control-Allow-Origin", true);
-  res.header("Access-Control_Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers","X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
-  next();
-})
-app.use(cors({
+// CORS Setup
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://keeper-app-frontend-eta.vercel.app',
+];
+app.use(
+  cors({
     credentials: true,
-    origin: 'http://localhost:3000',
-    allowedHeaders:["Origin", "X-Requested-With", "Content-Type", "Accept"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Allow requests with no origin (like mobile apps, curl, etc.)
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
   })
-)
-app.set("trust proxy", 1); //properly get the client's IP address.
+);
+app.set('trust proxy', 1); // Properly get the client's IP address
 
 // Set views
 app.use(express.json());
