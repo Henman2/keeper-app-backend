@@ -3,13 +3,14 @@ const userModel = require('../models/userModel');
 
 // Protected route middleware
 const auth = async (req, res, next) => {
-    const token = req.cookies.jwt; // Extract JWT from cookies
-
-    if (!token) {
-        return res.status(401).json({ message: "Not authorized, no token provided" });
-    }
-
+   
     try {
+         const token = req.cookies.jwt; // Extract JWT from cookies
+        if (!token) {
+            console.log('No token found');
+            return res.status(401).json({ message: 'Not authorized, no token provided' });
+        }
+
         // Verify the token
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
@@ -17,9 +18,9 @@ const auth = async (req, res, next) => {
         const user = await userModel.findById(decodedToken.userId).select("-password");
 
         if (!user) {
+            console.log('User not found');
             return res.status(401).json({ message: "Not authorized, user not found" });
         }
-
         // Attach the user to the request object
         req.user = user;
         next();

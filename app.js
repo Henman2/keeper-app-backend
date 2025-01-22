@@ -5,20 +5,26 @@ const noteRouter = require('./routes/noteRoutes');
 const app = express();
 const cookieParser = require('cookie-parser');
 
-//CORS Setup
-app.use((req, res, next) =>{
-  res.header("Access-Control-Allow-Origin", true);
-  res.header("Access-Control_Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers","X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
-  next();
-})
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:3000',
-    allowedHeaders:["Origin", "X-Requested-With", "Content-Type", "Accept"],
-  })
-)
+const whitelist = [
+  'http://localhost:3000',
+  'https://keeper-app-frontend-eta.vercel.app',
+];
+const corsOptionsDelegate = (req, callback) => {
+    const origin = req.header('Origin');
+    if (whitelist.includes(origin)) {
+      callback(null, {
+        credentials: true,
+        origin: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      });
+    } else {
+      console.error(`CORS blocked for origin: ${origin}`);
+      callback(null, { origin: false });
+    }
+};
+app.use(cors(corsOptionsDelegate)); 
+
 app.set("trust proxy", 1); //properly get the client's IP address.
 
 // Set views
