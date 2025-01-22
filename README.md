@@ -1,7 +1,7 @@
 keeper-App-Backend
 
 Overview
-The backend of the Keeper app is built using Node.js, Express, and MongoDB. It handles API requests for creating, updating, deleting, and fetching notes. User authentication and authorization are implemented using JWT (JSON Web Tokens).
+The backend of the Keeper app is built using Node.js, Express, and MongoDB. It handles API requests for creating, updating, deleting, and fetching notes. User authentication and authorization are implemented using JWT (JSON Web Tokens). The production version of the backend is hosted on render.
 
 Installation
 1. Clone the repository for the backend:
